@@ -2,9 +2,12 @@
 
 export default {
   name: 'My list',
+  
   data: function () {
     return {
       cont: {"week":0},
+      timer: "000000", 
+      servtime: new Date().getTime(),
       data:
         [
           { "topic": "networking", "week": 1, "desc": "overview" },
@@ -25,10 +28,49 @@ export default {
 
       
         ],
-
     }
   },
+      mounted() {
+              this.startClock()
+            },
+
+        methods: {
+
+        login(user) {
+          this.user = user
+          },
+
+        getVersion() {
+          baseReload('/freeloader/version.json').then(
+            (resp) => { this.version = resp.version; console.log("version ",this.version) }
+          )},
+
+          async startClock() {
+            var offset = 0 //await baseReload(`${BASEREDIS}/get/OFFSET`)
+            this.offset = offset == null ? 0 : parseInt(offset)
+            var tzoffset = 300 //await baseReload(`${BASEREDIS}/get/TZOFFSET`)
+            this.tzoffset = tzoffset == null ? 300 : parseInt(tzoffset) 
+            this.servtime =  new Date().getTime() //await baseReload(BASEURL+`/system/time`)
+            console.log("time",this.servtime)
+            //this.servtime = parseInt(servtime.servtime)
+            setInterval(this.updtTimer, 1000);
+          },
+
+        setOffset() { 
+          baseFetch(`${BASEREDIS}/set/OFFSET/${this.offset}`,'POST',{})
+          baseFetch(`${BASEREDIS}/set/TZOFFSET/${this.tzoffset}`,'POST',{})
+        },
+
+        updtTimer() {
+          this.servtime += 1000
+          var now = new Date(this.servtime).getTime() 
+          var now2 =  now - (this.tzoffset*60000)  + (this.offset*60000)
+          var ND = new Date(now2).toISOString();
+          this.timer = ND.slice(0,19).replace('T',' ')
+          },
+        },
 }
+
 </script>
 
 <template>
@@ -42,7 +84,7 @@ export default {
           Version 2.7.24
         </div>
         <div class="col-sm">
-          Clock
+          {{timer}}
         </div>
       </div>
     </div>
