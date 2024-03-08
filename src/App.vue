@@ -20,7 +20,10 @@ export default {
           { "topic": "css", "week": 2, "desc": "cascading style sheets" },
           { "topic": "bootstrap", "week": 2, "desc": "front-end framework" },
           { "topic": "vue.js install", "week": 2, "desc": "installed vue.js" },
-          { "topic": "no.js", "week": 2, "desc": "javascript" }
+          { "topic": "json", "week": 2, "desc": "javascript" },
+          { "topic": "git", "week": 2, "desc": "setup git account" }
+
+      
         ],
 
     }
