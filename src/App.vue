@@ -1,13 +1,21 @@
 <script>
+import {BASEURL,baseFetch,baseReload} from "./baseManager"
 
 export default {
+
+  mounted() {
+              this.startClock()
+            },
+
   name: 'My list',
   
   data: function () {
     return {
       cont: {"week":0},
-      timer: "000000", 
-      servtime: new Date().getTime(),
+      timer: "000000",
+      username: "",
+      password: "",
+      servtime: 0,
       data:
         [
           { "topic": "networking", "week": 1, "desc": "overview" },
@@ -24,57 +32,64 @@ export default {
           { "topic": "bootstrap", "week": 2, "desc": "front-end framework" },
           { "topic": "vue.js install", "week": 2, "desc": "installed vue.js" },
           { "topic": "json", "week": 2, "desc": "javascript" },
-          { "topic": "git", "week": 2, "desc": "setup git account" }
+          { "topic": "git", "week": 2, "desc": "setup git account" },
+          { "topic": "javascript", "week": 3, "desc": "login functions"}
 
       
         ],
     }
   },
-      mounted() {
-              this.startClock()
-            },
+   
 
         methods: {
 
-        login(user) {
-          this.user = user
-          },
+          logout() {
+    localStorage.token=''
+    localStorage.username='NotLoggedIn' 
+    //this.$emit('login','NotLoggedIn')
+    },
+
+    login() {
+      var item = { username: this.username, password: this.password }
+      baseFetch(`${BASEURL}/config/login`,'POST',item).then(
+        response => { 
+            console.log("Login ",response)
+            localStorage.token=response.token
+            localStorage.username=response.username
+            //this.$emit('login',response.username)
+            } )
+            .catch(error => console.log("login",error) )
+    },
+
 
         getVersion() {
           baseReload('/freeloader/version.json').then(
             (resp) => { this.version = resp.version; console.log("version ",this.version) }
           )},
 
-          async startClock() {
-            var offset = 0 //await baseReload(`${BASEREDIS}/get/OFFSET`)
-            this.offset = offset == null ? 0 : parseInt(offset)
-            var tzoffset = 300 //await baseReload(`${BASEREDIS}/get/TZOFFSET`)
-            this.tzoffset = tzoffset == null ? 300 : parseInt(tzoffset) 
-            this.servtime =  new Date().getTime() //await baseReload(BASEURL+`/system/time`)
-            console.log("time",this.servtime)
-            //this.servtime = parseInt(servtime.servtime)
-            setInterval(this.updtTimer, 1000);
-          },
+       async startClock() {
+      var servtime = await baseReload(BASEURL + `/system/time`);
+      //this.servtime = new Date()
+      this.servtime = parseInt(servtime.servtime);
+      console.log("servtime",this.servtime)
+      setInterval(this.updtTimer, 1000);
+    },
 
-        setOffset() { 
-          baseFetch(`${BASEREDIS}/set/OFFSET/${this.offset}`,'POST',{})
-          baseFetch(`${BASEREDIS}/set/TZOFFSET/${this.tzoffset}`,'POST',{})
-        },
+    updtTimer() {
+      this.servtime += 1000;
+      var now = new Date(this.servtime).getTime();
+      var ND = new Date(now).toLocaleString("en-CA", { hour12: false });
+      this.timer = ND.slice(0, 20).replace("T", " ")
+    },
 
-        updtTimer() {
-          this.servtime += 1000
-          var now = new Date(this.servtime).getTime() 
-          var now2 =  now - (this.tzoffset*60000)  + (this.offset*60000)
-          var ND = new Date(now2).toISOString();
-          this.timer = ND.slice(0,19).replace('T',' ')
-          },
-        },
+  }
+      
 }
 
 </script>
 
 <template>
-  <header>
+
     <div class="container">
       <div class="row">
         <div class="col-sm">
@@ -84,11 +99,10 @@ export default {
           Version 2.7.24
         </div>
         <div class="col-sm">
-          {{timer}}
+          {{ timer }}
         </div>
       </div>
     </div>
-  </header>
 
   <main>
     <br />
@@ -97,11 +111,11 @@ export default {
         <div class="card" style="width: 19rem;">
           <div class="card-body" style="width: 10rem;">
             <label for="username">Username:</label><br />
-            <input type="text" name="username" id="name" placeholder="Levi Richer" required /><br />
+            <input type="text" name="username" id="name" v-model="username" placeholder="Levi Richer" required /><br />
             <label for="Password"> Password:</label><br />
-            <input type="password" name="password" id="password" placeholder="Password" required /><br />
+            <input type="password" name="password" v-model="password" id="password" placeholder="Password" required /><br />
             <br/>
-            <button class="btn btn-success" onclick="myFunction()">Login</button> 
+            <button class="btn btn-success" @click="login">Login</button> 
           </div>
         </div>
         <div class="col-lg">
