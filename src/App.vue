@@ -5,6 +5,7 @@ export default {
 
   mounted() {
               this.startClock()
+              this.reload()
             },
 
   name: 'My list',
@@ -15,8 +16,11 @@ export default {
       timer: "000000",
       username: "",
       password: "",
+      newitem: {topic:"",desc:"", id:0,"week":0},
       servtime: 0,
-      data:
+      data: "",
+      loguser: localStorage.username,
+      /*
         [
           { "topic": "networking", "week": 1, "desc": "overview" },
           { "topic": "routers", "week": 1, "desc": "manage network" },
@@ -37,17 +41,37 @@ export default {
 
       
         ],
+        */
     }
   },
    
 
-        methods: {
+        methods: { 
+          addItem: function () {
+    baseFetch(BASEURL + '/tables/worklog','POST', this.newitem).then(
+        response => { 
+            this.newitem.id = response.id 
+            this.data.push(this.newitem)
+        })
+        .catch(result => console.log("addFloor",result))
+      },
+        delItem(item) {
+          console.log("theitem",item)
+    baseFetch(BASEURL + '/tables/worklog/'+item.id,'DELETE').then(
+        () => this.data=this.data.filter(el => el.id !== item.id)
+      ).catch(error => console.log("delFloor",error) )
+   },
 
           logout() {
     localStorage.token=''
     localStorage.username='NotLoggedIn' 
     //this.$emit('login','NotLoggedIn')
     },
+
+    reload(){
+      baseReload(BASEURL + '/tables/worklog').then(
+            (resp) => { this.data = resp })
+    } , 
 
     login() {
       var item = { username: this.username, password: this.password }
@@ -57,6 +81,7 @@ export default {
             localStorage.token=response.token
             localStorage.username=response.username
             //this.$emit('login',response.username)
+            this.loguser=response.username
             } )
             .catch(error => console.log("login",error) )
     },
@@ -93,7 +118,7 @@ export default {
     <div class="container">
       <div class="row">
         <div class="col-sm">
-          My List
+        {{loguser}}
         </div>
         <div class="col-sm">
           Version 2.7.24
@@ -122,6 +147,16 @@ export default {
           <div>
             <table>
               <thead><th>Topic</th><th>Description</th><th>Week</th></thead>
+
+              <tr>
+<td><input type="text" class="input-sm" v-model="newitem.topic" /></td>
+<td><input type="text" class="input" v-model="newitem.desc" /></td>
+<td><input type="number" class="input-sm" v-model="newitem.week" /></td>
+<td>{{ newitem.id }}</td>
+
+<td><button class="btn btn-success btn-sm" @click="addItem">Add</button></td>
+</tr>
+
               <tr v-for="item in data" :key="item.topic" >
                 <td>
                   <a @click="cont = item" class="NFM">
@@ -133,6 +168,7 @@ export default {
                 </td>
                 <td>&nbsp; {{ item.desc }}</td>
                 <td>&nbsp; {{ item.week }}</td>
+                <button class="btn btn-danger btn-sm" @click="delItem(item)">Del</button>
               </tr>
 
 
