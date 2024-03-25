@@ -107,7 +107,7 @@ export default {
           )},
 
        async startClock() {
-      var servtime = await baseReload(BASEURL + `/system/time`);
+      var servtime = await baseReload(BASEURL + `/server/time`);
       //this.servtime = new Date()
       this.servtime = parseInt(servtime.servtime);
       console.log("servtime",this.servtime)

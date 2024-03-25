@@ -8,6 +8,14 @@ export default defineConfig({
   plugins: [
     vue(),
   ],
+  server: {
+    proxy: {
+      '/worklog/api': {
+        target: 'http://localhost:8040'
+      }
+    }
+  },
+  base: '/worklog',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
