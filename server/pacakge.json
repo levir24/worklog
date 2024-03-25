@@ -1,0 +1,11 @@
+{
+    "name": "worklog",
+    "version": "24.4.0",
+    "dependencies": {
+        "bcrypt": "^5.1.1",
+        "body-parser": "^1.18.3",
+        "express": "^4.17.1",
+        "jsonwebtoken": "^9.0.2",
+        "node-fetch": "^2.6.6"
+    }
+}

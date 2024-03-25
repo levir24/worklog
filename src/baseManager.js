@@ -1,4 +1,4 @@
-export const BASEURL = 'http://192.168.2.124:8070/freeloader/api'
+export const BASEURL = 'http://192.168.2.73:8070/freeloader/api'
 export const BASEDATA = '/freeloader/api/data'
 export const BASEREDIS = '/freeloader/api/redis'
 export const BASEAPP = '/daliapp/api/server'

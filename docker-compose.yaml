@@ -1,0 +1,14 @@
+version: '3.6'
+
+services:
+
+  freeloader:
+    image: gwyncm/freeloader:24.02.20
+    ports:
+      - 8070:8070    
+    environment:
+      REDIS_HOST: redis
+      TZ: 'America/New_York'
+    volumes:
+      -  ./uploads:/freeloader/uploads
+    restart: always

@@ -5,7 +5,7 @@ export default {
 
   mounted() {
               this.startClock()
-              this.reload()
+             this.reload()
             },
 
   name: 'My list',
@@ -18,26 +18,27 @@ export default {
       password: "",
       newitem: {topic:"",desc:"", id:0,"week":0},
       servtime: 0,
-      data: "",
       loguser: localStorage.username,
+
+      data: []
       /*
         [
-          { "topic": "networking", "week": 1, "desc": "overview" },
-          { "topic": "routers", "week": 1, "desc": "manage network" },
-          { "topic": "switches", "week": 1, "desc": "device connect" },
-          { "topic": "nat", "week": 1, "desc": "network address translation" },
-          { "topic": "dhcp", "week": 1, "desc": "provides ip" },
-          { "topic": "dns", "week": 1, "desc": "domain name system" },
-          { "topic": "basic html", "week": 1, "desc": "introduction" },
-          { "topic": "simple html page", "week": 1, "desc": "login example" },
-          { "topic": "manage switch installation", "week": 1, "desc": "switch setup" },
-          { "topic": "basic login screen", "week": 1, "desc": "created login screen" },
-          { "topic": "css", "week": 2, "desc": "cascading style sheets" },
-          { "topic": "bootstrap", "week": 2, "desc": "front-end framework" },
-          { "topic": "vue.js install", "week": 2, "desc": "installed vue.js" },
-          { "topic": "json", "week": 2, "desc": "javascript" },
-          { "topic": "git", "week": 2, "desc": "setup git account" },
-          { "topic": "javascript", "week": 3, "desc": "login functions"}
+          { id: 2,"topic": "networking", "week": 1, "desc": "overview" },
+          { id: 3,"topic": "routers", "week": 1, "desc": "manage network" },
+          { id: 4,"topic": "switches", "week": 1, "desc": "device connect" },
+          { id: 5,"topic": "nat", "week": 1, "desc": "network address translation" },
+          { id: 6,"topic": "dhcp", "week": 1, "desc": "provides ip" },
+          { id: 7,"topic": "dns", "week": 1, "desc": "domain name system" },
+          { id: 8,"topic": "basic html", "week": 1, "desc": "introduction" },
+          { id: 9,"topic": "simple html page", "week": 1, "desc": "login example" },
+          { id: 10,"topic": "manage switch installation", "week": 1, "desc": "switch setup" },
+          { id: 11,"topic": "basic login screen", "week": 1, "desc": "created login screen" },
+          { id: 12,"topic": "css", "week": 2, "desc": "cascading style sheets" },
+          { id: 13,"topic": "bootstrap", "week": 2, "desc": "front-end framework" },
+          { id: 14,"topic": "vue.js install", "week": 2, "desc": "installed vue.js" },
+          { id: 15,"topic": "json", "week": 2, "desc": "javascript" },
+          { id: 16,"topic": "git", "week": 2, "desc": "setup git account" },
+          { id: 17,"topic": "javascript", "week": 3, "desc": "login functions"}
 
       
         ],
@@ -55,6 +56,13 @@ export default {
         })
         .catch(result => console.log("addFloor",result))
       },
+      updtItem: function (item) {
+    baseFetch(BASEURL + '/tables/worklog','PUT', item).then(
+        response => { 
+           
+        })
+        .catch(result => console.log("addFloor",result))
+      },
         delItem(item) {
           console.log("theitem",item)
     baseFetch(BASEURL + '/tables/worklog/'+item.id,'DELETE').then(
@@ -67,6 +75,12 @@ export default {
     localStorage.username='NotLoggedIn' 
     //this.$emit('login','NotLoggedIn')
     },
+      save() {
+        if (window.confirm("Do you really want to leave?")) {
+          baseFetch(`${BASEURL}/tables/saveall`,'POST',{})
+}       
+
+      },
 
     reload(){
       baseReload(BASEURL + '/tables/worklog').then(
@@ -141,6 +155,8 @@ export default {
             <input type="password" name="password" v-model="password" id="password" placeholder="Password" required /><br />
             <br/>
             <button class="btn btn-success" @click="login">Login</button> 
+            <br/>
+            <button class="btn btn-danger" @click="save">Save</button>
           </div>
         </div>
         <div class="col-lg">
@@ -169,6 +185,8 @@ export default {
                 <td>&nbsp; {{ item.desc }}</td>
                 <td>&nbsp; {{ item.week }}</td>
                 <button class="btn btn-danger btn-sm" @click="delItem(item)">Del</button>
+                &nbsp;
+                <button class="btn btn-success btn-sm" @click="updtItem(item)">Update</button>
               </tr>
 
 
