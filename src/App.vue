@@ -89,7 +89,7 @@ export default {
 
     login() {
       var item = { username: this.username, password: this.password }
-      baseFetch(`${BASEURL}/config/login`,'POST',item).then(
+      baseFetch(`${BASEURL}/tables/login`,'POST',item).then(
         response => { 
             console.log("Login ",response)
             localStorage.token=response.token

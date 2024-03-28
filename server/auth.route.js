@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 const SECRET = process.env.SECRET || 'imononesideimontheother'
-const BASEURL     = process.env.BASEURL    || '/freeloader'
+const BASEURL     = process.env.BASEURL    || '/worklog'
 
 router.use((req, res, next) => {
 
@@ -12,7 +12,7 @@ router.use((req, res, next) => {
     req.decoded = {}
     if (req.method === 'GET') { next(); return }
     //if (req.url.startsWith(BASEURL+'/api/data/login')) { next(); return }
-    if (req.url.startsWith(BASEURL+'/api/config/login')) { next(); return }
+    if (req.url.startsWith(BASEURL+'/api/tables/login')) { next(); return }
     if (req.url.startsWith(BASEURL+'/api/config/pull')) { next(); return }
     if (req.url.startsWith('/daliapp/api/server/zonecmd')) { next(); return }
 
