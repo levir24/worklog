@@ -1,7 +1,6 @@
 export const BASEURL = '/worklog/api'
 export const BASEDATA = '/freeloader/api/data'
-export const BASEREDIS = '/freeloader/api/redis'
-export const BASEAPP = '/daliapp/api/server'
+export const BASEAPP = '/worklog/api/server'
 
 export async function baseFetch(URL,method,data) {
     var token = localStorage.token
